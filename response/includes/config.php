@@ -1,5 +1,5 @@
 <?php 
-if($_SERVER['HTTP_HOST'] == "localhost") {
+if($_SERVER['HTTP_HOST'] == "localhost" || $_SERVER['HTTP_HOST'] == "local.betterpixel.com") {
     define("DB_NAME", 'bp_millasperrunas');
     define("DB_USER", 'root');
     define("DB_PASS", 'root');

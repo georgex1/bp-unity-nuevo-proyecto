@@ -5,7 +5,7 @@
 	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 	<ProductVersion>10.0.20506</ProductVersion>
 	<SchemaVersion>2.0</SchemaVersion>
-	<ProjectGuid>{F9978667-E532-5F6D-DE79-8A42D0A0A9E9}</ProjectGuid>
+	<ProjectGuid>{518622B2-9050-A153-E465-3E4BD155181A}</ProjectGuid>
 	<OutputType>Library</OutputType>
 	<AppDesignerFolder>Properties</AppDesignerFolder>
 	<RootNamespace></RootNamespace>
@@ -46,9 +46,6 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Plugins\SQLiter\Scripts\Example.cs" />
-     <Compile Include="Assets\Plugins\SQLiter\Scripts\LoomManager.cs" />
-     <Compile Include="Assets\Plugins\SQLiter\Scripts\SQLite.cs" />
      <Compile Include="Assets\Standard Assets\JSONObject.cs" />
      <Compile Include="Assets\Standard Assets\MiniJSON.cs" />
      <Compile Include="Assets\Standard Assets\UserData.cs" />
@@ -119,6 +116,7 @@
      <None Include="Assets\Plugins\Android\google-play-services_lib\res\values\common_attrs.xml" />
      <None Include="Assets\Plugins\Android\AndroidManifest.xml" />
      <None Include="Assets\Plugins\Android\native_plugins_lib\res\values-v11\styles.xml" />
+     <None Include="Assets\sqlitekit\Readme.txt" />
      <None Include="Assets\Plugins\Android\facebook\res\drawable\com_facebook_top_background.xml" />
      <None Include="Assets\Plugins\Android\google-play-services_lib\res\values-el\common_strings.xml" />
      <None Include="Assets\Plugins\Android\google-play-services_lib\res\values-ms-rMY\common_strings.xml" />
@@ -150,6 +148,7 @@
      <None Include="Assets\Plugins\Android\google-play-services_lib\res\values-es\common_strings.xml" />
      <None Include="Assets\Plugins\Android\twitter_lib\res\values-pt\values.xml" />
      <None Include="Assets\Plugins\Android\google-play-services_lib\res\values-hi\common_strings.xml" />
+     <None Include="Assets\sqlitekit\license.txt" />
      <None Include="Assets\Plugins\Android\google-play-services_lib\res\values-te-rIN\common_strings.xml" />
      <None Include="Assets\Plugins\Android\facebook\res\layout\com_facebook_picker_activity_circle_row.xml" />
      <None Include="Assets\Plugins\Android\native_plugins_lib\res\values-v14\styles.xml" />
@@ -204,7 +203,6 @@
      <None Include="Assets\Plugins\Android\facebook\res\drawable\com_facebook_picker_item_background.xml" />
      <None Include="Assets\Plugins\Android\google-play-services_lib\res\color\wallet_secondary_text_holo_dark.xml" />
      <None Include="Assets\Plugins\Android\twitter_lib\proguard.txt" />
-     <None Include="Assets\Plugins\SQLiter\README.txt" />
      <None Include="Assets\Plugins\Android\facebook\res\values-es\strings.xml" />
      <None Include="Assets\Plugins\Android\google-play-services_lib\res\values-iw\common_strings.xml" />
      <None Include="Assets\Plugins\Android\facebook\res\layout\com_facebook_picker_list_row.xml" />
@@ -253,19 +251,13 @@
  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/4.6.2/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="Mono.Data.SqliteClient">
- <HintPath>E:/wamp/www/betterpixel/rednit/rednit/Assets/Plugins/SQLiter/DLLs/Mono.Data.SqliteClient.dll</HintPath>
+ <HintPath>E:/unity proyectos/bp-unity-nuevo-proyecto/unity/Assets/Mono.Data.SqliteClient.dll</HintPath>
  </Reference>
  <Reference Include="System.Data">
- <HintPath>E:/wamp/www/betterpixel/rednit/rednit/Assets/Plugins/SQLiter/DLLs/System.Data.dll</HintPath>
+ <HintPath>E:/unity proyectos/bp-unity-nuevo-proyecto/unity/Assets/System.Data.dll</HintPath>
  </Reference>
  <Reference Include="IFacebook">
- <HintPath>E:/wamp/www/betterpixel/rednit/rednit/Assets/Facebook/Scripts/IFacebook.dll</HintPath>
- </Reference>
- <Reference Include="Mono.Data">
- <HintPath>E:/wamp/www/betterpixel/rednit/rednit/Assets/Plugins/Mono.Data.dll</HintPath>
- </Reference>
- <Reference Include="Mono.Data.Sqlite">
- <HintPath>E:/wamp/www/betterpixel/rednit/rednit/Assets/Plugins/Mono.Data.Sqlite.dll</HintPath>
+ <HintPath>E:/unity proyectos/bp-unity-nuevo-proyecto/unity/Assets/Facebook/Scripts/IFacebook.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

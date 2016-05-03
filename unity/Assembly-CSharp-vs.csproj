@@ -5,7 +5,7 @@
 	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 	<ProductVersion>10.0.20506</ProductVersion>
 	<SchemaVersion>2.0</SchemaVersion>
-	<ProjectGuid>{F35B3A61-86C5-8CAB-8C38-5D66CA9C662A}</ProjectGuid>
+	<ProjectGuid>{C3DA89E1-70C6-7D6C-993E-C8F831D35880}</ProjectGuid>
 	<OutputType>Library</OutputType>
 	<AppDesignerFolder>Properties</AppDesignerFolder>
 	<RootNamespace></RootNamespace>
@@ -393,6 +393,100 @@
      <Compile Include="Assets\scripts\notifications.cs" />
      <Compile Include="Assets\scripts\scenes scripts\login.cs" />
      <Compile Include="Assets\scripts\scenes scripts\loginFacebook.cs" />
+     <Compile Include="Assets\sqlitekit\DemoObject.cs" />
+     <Compile Include="Assets\sqlitekit\DemoObject2.cs" />
+     <Compile Include="Assets\sqlitekit\SQLiteAsync.cs" />
+     <Compile Include="Assets\sqlitekit\SQLiteDB.cs" />
+     <Compile Include="Assets\sqlitekit\SQLiteManager.cs" />
+     <Compile Include="Assets\sqlitekit\SQLiteQuery.cs" />
+     <Compile Include="Assets\sqlitekit\ThreadQueue.cs" />
+     <Compile Include="Assets\sqlitekit\src\BtreeInt_h.cs" />
+     <Compile Include="Assets\sqlitekit\src\Btree_h.cs" />
+     <Compile Include="Assets\sqlitekit\src\Delegates.cs" />
+     <Compile Include="Assets\sqlitekit\src\Hash_h.cs" />
+     <Compile Include="Assets\sqlitekit\src\VdbeInt_h.cs" />
+     <Compile Include="Assets\sqlitekit\src\Vdbe_h.cs" />
+     <Compile Include="Assets\sqlitekit\src\_Custom.cs" />
+     <Compile Include="Assets\sqlitekit\src\alter_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\analyze_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\attach_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\auth_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\backup_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\bitvec_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\btmutex_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\btree_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\build_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\callback_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\complete_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\crypto.cs" />
+     <Compile Include="Assets\sqlitekit\src\ctime_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\date_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\delete_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\expr_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\fault_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\fkey_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\func_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\global_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\hash_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\hwtime_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\insert_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\journal_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\keywordhash_h.cs" />
+     <Compile Include="Assets\sqlitekit\src\legacy_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\loadext_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\main_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\malloc_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\mem_Pool.cs" />
+     <Compile Include="Assets\sqlitekit\src\memjournal_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\mutex_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\mutex_h.cs" />
+     <Compile Include="Assets\sqlitekit\src\mutex_noop_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\mutex_w32.cs" />
+     <Compile Include="Assets\sqlitekit\src\notify_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\opcodes_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\opcodes_h.cs" />
+     <Compile Include="Assets\sqlitekit\src\os_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\os_common_h.cs" />
+     <Compile Include="Assets\sqlitekit\src\os_h.cs" />
+     <Compile Include="Assets\sqlitekit\src\os_win_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\pager_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\pager_h.cs" />
+     <Compile Include="Assets\sqlitekit\src\parse_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\parse_h.cs" />
+     <Compile Include="Assets\sqlitekit\src\pcache1_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\pcache_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\pcache_h.cs" />
+     <Compile Include="Assets\sqlitekit\src\pragma_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\prepare_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\printf_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\random_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\resolve_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\rowset_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\select_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\sqlite3_h.cs" />
+     <Compile Include="Assets\sqlitekit\src\sqliteInt_h.cs" />
+     <Compile Include="Assets\sqlitekit\src\sqliteLimit_h.cs" />
+     <Compile Include="Assets\sqlitekit\src\status_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\stream_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\stream_h.cs" />
+     <Compile Include="Assets\sqlitekit\src\table_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\tokenize_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\trigger_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\update_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\utf_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\util_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\vacuum_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\vdbe_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\vdbeapi_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\vdbeaux_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\vdbeblob_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\vdbemem_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\vdbetrace_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\vtab_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\wal_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\wal_h.cs" />
+     <Compile Include="Assets\sqlitekit\src\walker_c.cs" />
+     <Compile Include="Assets\sqlitekit\src\where_c.cs" />
      <None Include="Assets\Plugins\Android\google-play-services_lib\res\values-it\common_strings.xml" />
      <None Include="Assets\Plugins\Android\google-play-services_lib\res\color\common_signin_btn_text_light.xml" />
      <None Include="Assets\Plugins\Android\google-play-services_lib\res\values-mr-rIN\common_strings.xml" />
@@ -460,6 +554,7 @@
      <None Include="Assets\Plugins\Android\google-play-services_lib\res\values\common_attrs.xml" />
      <None Include="Assets\Plugins\Android\AndroidManifest.xml" />
      <None Include="Assets\Plugins\Android\native_plugins_lib\res\values-v11\styles.xml" />
+     <None Include="Assets\sqlitekit\Readme.txt" />
      <None Include="Assets\Plugins\Android\facebook\res\drawable\com_facebook_top_background.xml" />
      <None Include="Assets\Plugins\Android\google-play-services_lib\res\values-el\common_strings.xml" />
      <None Include="Assets\Plugins\Android\google-play-services_lib\res\values-ms-rMY\common_strings.xml" />
@@ -491,6 +586,7 @@
      <None Include="Assets\Plugins\Android\google-play-services_lib\res\values-es\common_strings.xml" />
      <None Include="Assets\Plugins\Android\twitter_lib\res\values-pt\values.xml" />
      <None Include="Assets\Plugins\Android\google-play-services_lib\res\values-hi\common_strings.xml" />
+     <None Include="Assets\sqlitekit\license.txt" />
      <None Include="Assets\Plugins\Android\google-play-services_lib\res\values-te-rIN\common_strings.xml" />
      <None Include="Assets\Plugins\Android\facebook\res\layout\com_facebook_picker_activity_circle_row.xml" />
      <None Include="Assets\Plugins\Android\native_plugins_lib\res\values-v14\styles.xml" />
@@ -545,7 +641,6 @@
      <None Include="Assets\Plugins\Android\facebook\res\drawable\com_facebook_picker_item_background.xml" />
      <None Include="Assets\Plugins\Android\google-play-services_lib\res\color\wallet_secondary_text_holo_dark.xml" />
      <None Include="Assets\Plugins\Android\twitter_lib\proguard.txt" />
-     <None Include="Assets\Plugins\SQLiter\README.txt" />
      <None Include="Assets\Plugins\Android\facebook\res\values-es\strings.xml" />
      <None Include="Assets\Plugins\Android\google-play-services_lib\res\values-iw\common_strings.xml" />
      <None Include="Assets\Plugins\Android\facebook\res\layout\com_facebook_picker_list_row.xml" />
@@ -594,24 +689,18 @@
  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/4.6.2/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="Mono.Data.SqliteClient">
- <HintPath>E:/wamp/www/betterpixel/rednit/rednit/Assets/Plugins/SQLiter/DLLs/Mono.Data.SqliteClient.dll</HintPath>
+ <HintPath>E:/unity proyectos/bp-unity-nuevo-proyecto/unity/Assets/Mono.Data.SqliteClient.dll</HintPath>
  </Reference>
  <Reference Include="System.Data">
- <HintPath>E:/wamp/www/betterpixel/rednit/rednit/Assets/Plugins/SQLiter/DLLs/System.Data.dll</HintPath>
+ <HintPath>E:/unity proyectos/bp-unity-nuevo-proyecto/unity/Assets/System.Data.dll</HintPath>
  </Reference>
  <Reference Include="IFacebook">
- <HintPath>E:/wamp/www/betterpixel/rednit/rednit/Assets/Facebook/Scripts/IFacebook.dll</HintPath>
- </Reference>
- <Reference Include="Mono.Data">
- <HintPath>E:/wamp/www/betterpixel/rednit/rednit/Assets/Plugins/Mono.Data.dll</HintPath>
- </Reference>
- <Reference Include="Mono.Data.Sqlite">
- <HintPath>E:/wamp/www/betterpixel/rednit/rednit/Assets/Plugins/Mono.Data.Sqlite.dll</HintPath>
+ <HintPath>E:/unity proyectos/bp-unity-nuevo-proyecto/unity/Assets/Facebook/Scripts/IFacebook.dll</HintPath>
  </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Assembly-CSharp-firstpass-vs.csproj">
-      <Project>{F9978667-E532-5F6D-DE79-8A42D0A0A9E9}</Project>      <Name>Assembly-CSharp-firstpass-vs</Name>    </ProjectReference>
+      <Project>{518622B2-9050-A153-E465-3E4BD155181A}</Project>      <Name>Assembly-CSharp-firstpass-vs</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

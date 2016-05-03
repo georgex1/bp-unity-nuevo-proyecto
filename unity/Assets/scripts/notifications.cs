@@ -69,23 +69,23 @@ public class notifications : MonoBehaviour {
 	
 	private void DidReceiveRemoteNotificationEvent (CrossPlatformNotification _notification)
 	{
-		Debug.Log("Received DidReceiveRemoteNotificationEvent : " + _notification.ToString());
-		string[] 	m_buttons				= new string[] { "Cancelar", "Ver" };
-		NPBinding.UI.ShowAlertDialogWithMultipleButtons("Alerta!", _notification.AlertBody, m_buttons, MultipleButtonsAlertClosed); 
-	}
-
-	private void MultipleButtonsAlertClosed (string _buttonPressed)
-	{
-		if (_buttonPressed == "Ver") {
-			GMS.call_updates ("notificaciones");
-			Application.LoadLevel ("notificaciones");
+		IDictionary _userInfo 			= _notification.UserInfo;
+		if (_userInfo != null) {
+			//(string)_userInfo["notifType"] == "chat"
 		}
+
+		string[] m_buttons = new string[] { "Cerrar", "Ver" };
+		NPBinding.UI.ShowAlertDialogWithMultipleButtons ("Tienes una nueva notificación", _notification.AlertBody, m_buttons, (string _buttonPressed)=>{
+			if(_buttonPressed == "Ver"){
+
+				//Application.LoadLevel ("notificaciones");
+			}
+		});
 	}
 
 	private void DidLaunchWithRemoteNotificationEvent (CrossPlatformNotification _notification)
 	{
-		GMS.call_updates ("notificaciones");
-		Application.LoadLevel ("notificaciones");
+
 	}
 	
 	private void DidFinishRegisterForRemoteNotificationEvent (string _deviceToken, string _error)

@@ -1,9 +1,10 @@
 <?php 
-include('PHPMailer_v5.1/class.phpmailer.php');
+//include('PHPMailer_v5.1/class.phpmailer.php');
+require 'PHPMailer/PHPMailerAutoload.php';
 include('config.php');
 define("PAG_ITEMS", 50);
 
-date_default_timezone_set('America/Argentina/Buenos_Aires');
+//date_default_timezone_set('America/Argentina/Buenos_Aires');
 setlocale(LC_ALL, 'es_ES');
 
 function sql_connect() {
@@ -199,7 +200,7 @@ function get($table = '', $select = '*', $where = array(), $order = array(), $co
     }
 
     $query = "Select " . $select . " FROM " . $table . " " . $where_vals;
-    file_put_contents('sqldebug.txt', $query, FILE_APPEND);
+    //file_put_contents('sqldebug.txt', $query, FILE_APPEND);
 
     $sql = mysql_query($query);
     if ($count) {
@@ -227,7 +228,7 @@ function delete($id_ = '', $table = '', $showQuery = false) {
     } elseif (is_array($id_) && !empty($id_)) {
         $extw = " where ";
         foreach ($id_ as $id_key => $id_val) {
-            $extw .= cleanQuery($id_key) . ' = ' . cleanQuery($id_val) . " and ";
+            $extw .= cleanQuery($id_key) . " = '" . cleanQuery($id_val) . "' and ";
         }
         $extw = substr($extw, 0, -4);
         $query = "delete from " . $table . $extw;
@@ -263,12 +264,12 @@ function getClientIP() {
 
     return getenv('REMOTE_ADDR');
 }
-
+/*
 function send_emails($data = array(), $subject = '', $addresses = array(), $template = 'email_template') {
-    $email_content = file_get_contents(SITE_URL . 'includes/' . $template . '.html');
-
+    $email_content = file_get_contents( './includes/' . $template . '.html');
+    
     $mail = new PHPMailer();
-    $mail->IsHTML(true); // El correo se env�a como HTML
+    $mail->IsHTML(true); // El correo se envia como HTML
 
     $mail->CharSet = 'utf-8';
 
@@ -287,14 +288,63 @@ function send_emails($data = array(), $subject = '', $addresses = array(), $temp
 
     $email_content = str_replace('{{subject}}', $subject, $email_content);
     $email_content = str_replace('{{emailcontent}}', $emcontent, $email_content);
-
+    
     foreach ($addresses as $address) {
-        $mail->AddAddress($address);
+        $mail->AddAddress($address, $address);
     }
 
     $mail->Body = utf8_encode($email_content);
+    $mail->AltBody = strip_tags($emcontent);
+    
+    try {
+        $mail->Send();
+    } catch (phpmailerException $e) {
+        //echo $e->errorMessage(); //Pretty error messages from PHPMailer
+    } catch (Exception $e) {
+        //echo $e->getMessage(); //Boring error messages from anything else!
+    }
+}
+*/
 
-    $mail->Send();
+function send_emails($data = array(), $subject = '', $addresses = array(), $template = 'email_template') {
+    $email_content = file_get_contents( './includes/' . $template . '.html');
+    
+    $mail = new PHPMailer;
+    $mail->IsHTML(true); // El correo se envia como HTML
+
+    $mail->CharSet = 'utf-8';
+
+    $mail->setFrom(MAIL_FROM, MAIL_FROMNAME);
+    $mail->Subject = utf8_encode($subject);
+
+    $emcontent = '';
+    if (is_array($data)) {
+        foreach ($data as $data_key => $data_value) {
+            $emcontent .= '<p>' . $data_key . ': ' . $data_value . '</p>';
+        }
+    } else {
+        $emcontent .= $data;
+    }
+
+    $email_content = str_replace('{{subject}}', $subject, $email_content);
+    $email_content = str_replace('{{emailcontent}}', $emcontent, $email_content);
+    
+    foreach ($addresses as $address) {
+        $mailName = explode('@', $address);
+        $mail->addAddress($address, $mailName[0]);
+    }
+
+    $mail->Body = utf8_encode($email_content);
+    $mail->AltBody = strip_tags($emcontent);
+    
+    $mail->send();
+    /*try {
+        $mail->Send();
+    } catch (phpmailerException $e) {
+        //echo $e->errorMessage(); //Pretty error messages from PHPMailer
+    } catch (Exception $e) {
+        //echo $e->getMessage(); //Boring error messages from anything else!
+    }*/
 }
 
 function randomText($length) {
@@ -316,11 +366,68 @@ function getActualDate() {
     return date('Y-m-d H:i:s', $_SERVER['REQUEST_TIME']);
 }
 
+function login_user_admin($data = array()) {
+    $sql = "SELECT id, usuario
+    FROM usuarios_admin
+    WHERE email = '" . cleanQuery($data['email']) . "'
+    AND password = '" . md5(cleanQuery($data['password'])) . "'
+    AND rol = 'admin'";
+    $query = mysql_query($sql);
+    if (mysql_numrows($query) > 0) {
+        $r = mysql_fetch_array($query, MYSQL_ASSOC);
+        $_SESSION['id_user'] = $r['id'];
+        $_SESSION['tipo_usuario'] = $r['tipo_usuario'];
+        $_SESSION['user'] = $r['usuario'];
+        return true;
+    }
+    return false;
+}
+
+function get_register_user($email = ''){
+    $query = "select id from usuarios where email = '".cleanQuery($email)."' and ( password <> null or fbid <> null ) ";
+    
+    $sql = mysql_query($query);
+    return mysql_num_rows($sql);
+}
+
+function get_temporary_user($email = ''){
+    $query = "select id from usuarios where email = '".cleanQuery($email)."' and password is null and fbid is null  ";
+    
+    $sql = mysql_query($query);
+    $data_ = array();
+    while ($row = mysql_fetch_array($sql, MYSQL_ASSOC)) {
+        $data_[] = $row;
+    }
+
+    if(!empty($data_)){
+        return array_shift( $data_ );
+    }else{
+        return false;
+    }
+}
+
 function getforpush() {
     $query = "select u.regid, u.plataforma, u.id as usuario_id, n.titulo, n.descripcion, n.id
         from usuarios u, notificaciones n
         where u.id NOT IN ( select usuarios_id from notificaciones_usuarios where notificaciones_id = n.id )
         and ( n.fecha_envio is null or n.fecha_envio <= NOW() ) and u.regid is not null
+        limit 50
+        ";
+
+    $sql = mysql_query($query);
+    $data_ = array();
+    while ($row = mysql_fetch_array($sql, MYSQL_ASSOC)) {
+        $data_[] = $row;
+    }
+
+    return $data_;
+}
+
+function getforpushMensajes(){
+    $query = "select a.regid, a.plataforma, nm.amigos_usuarios_id, u.nombre, u.id as usuario_id, nm.mensaje, nm.id, nm.perros_id, a.nombre as amigos_nombre
+        from usuarios u
+        inner join notificaciones_mensajes nm on nm.usuarios_id = u.id
+        inner join usuarios a on a.id = nm.amigos_usuarios_id
         limit 50
         ";
 
@@ -346,6 +453,34 @@ function user_agent(){
     }else{
         return 'pc';
     }
+}
+
+function generateId(){
+    return $_SERVER['REQUEST_TIME']/*.  rand(0, 9)*/;
+}
+
+function cortar_texto($texto, $length){
+    $textoCr = $texto;
+    if(strlen($texto) > $length){
+        $textoCr = substr($texto, 0, $length) . '...';
+    }
+    return $textoCr;
+}
+
+function download_image1($image_url, $image_file){
+    $fp = fopen ($image_file, 'w+');              // open file handle
+
+    $ch = curl_init($image_url);
+    // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // enable if you want
+    curl_setopt($ch, CURLOPT_FILE, $fp);          // output to file
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 1000);      // some large value to allow curl to run for a long time
+    curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0');
+    // curl_setopt($ch, CURLOPT_VERBOSE, true);   // Enable this line to see debug prints
+    curl_exec($ch);
+
+    curl_close($ch);                              // closing curl handle
+    fclose($fp);                                  // closing file handle
 }
 
 ?>

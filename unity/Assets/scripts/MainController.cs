@@ -12,14 +12,15 @@ public class MainController : MonoBehaviour {
 
 	public string dbName = "rednit.db";
 	private string appHash = "R3dN1t!";
-	private string responseURL = "http://thepastoapps.com/proyectos/rednit/response/response.php";
-	private string responseAssets = "http://thepastoapps.com/proyectos/rednit/response/assets/images/";
+	private string responseURL = "http://local.betterpixel.com/bp_response/response.php";
+	private string responseAssets = "http://local.betterpixel.com/bp_response/assets/images/";
 	//private string responseURL = "http://localhost/betterpixel/rednit/response/response.php";
 	private string Uid;
 
 	private float loadTime;
 	private bool closeApp;
 	private bool checkUpdate;
+	private string errorChrs;
 
 	public dbAccess db ;
 
@@ -221,10 +222,32 @@ public class MainController : MonoBehaviour {
 
 					userData.id = int.Parse( (string)Wresponse3["id"] );
 
-					saveUserData(true);
-					Application.LoadLevel ("home");
+					if( (string)Wresponse2["hasArray"] != "0" ){
+						string WarrayContent_ = MiniJSON.Json.Serialize(Wresponse["arrayContent"]);
+						IDictionary WresponseContent = (IDictionary) MiniJSON.Json.Deserialize ( WarrayContent_ );
+						
+						
+						for(int i = 1; i <= int.Parse( (string)Wresponse2["hasArray"] ); i++ ){
+							IDictionary reponseContent = (IDictionary) MiniJSON.Json.Deserialize ( (string)WresponseContent[i.ToString()]  );
+							
+							userData.email = (string)reponseContent["email"];
+							userData.nombre = (string)reponseContent["nombre"];
+							userData.sexo = (string)reponseContent["sexo"];
+							
+							userData.foto = (string)reponseContent["foto"];
+							
+							try_download_persona_imagen((string)reponseContent["foto"]);
+							
+							saveUserData(true);
+							
+							//upload_user_foto();
+							StartCoroutine( redirect("subir-foto", 3f) );
+							download_personas();
+							
+						}
+					}
 
-					download_personas();
+
 				}
 
 				if(response == "get_personas"){
@@ -316,6 +339,14 @@ public class MainController : MonoBehaviour {
 			sendDataDebug = "WWW Error: "+www.error;
 			Debug.Log("WWW Error: "+ www.error);
 		}
+	}
+
+	private IEnumerator redirect(string escene_, float seconds){
+		yield return new WaitForSeconds (seconds);
+		
+		Debug.Log ("redirect escene: " + escene_ + " en " + seconds);
+		showLoading(false);
+		Application.LoadLevel (escene_);
 	}
 
 	private void populateUserData(IDictionary values){
@@ -462,26 +493,42 @@ public class MainController : MonoBehaviour {
 
 	public void insert_sync(string[] fields, string[] values, string sync_func){
 
-		db.OpenDB (dbName);
-
 		string fields_json = MiniJSON.Json.Serialize(fields);
 		string values_json = MiniJSON.Json.Serialize(values);
+
+		string newSyncId = getSyncNewId ();
 
 		//Debug.Log ("insertar en sync fields: " + fields_json + "values: " + values_json + " func: " + sync_func);
 
 		string[] colsF = new string[]{ "id", "func", "sfields", "svalues"};
-		string[] colsV = new string[]{ generateId().ToString(), sync_func, fields_json, values_json };
-		
-		db.InsertIntoSpecific("sync", colsF, colsV);
+		string[] colsV = new string[]{ newSyncId, sync_func, fields_json, values_json };
 
+		db.OpenDB (dbName);
+		db.InsertIntoSpecific("sync", colsF, colsV);
 		db.CloseDB ();
+	}
+
+	private string getSyncNewId(){
+		db.OpenDB(dbName);
+		ArrayList result = db.BasicQueryArray ("select id from sync order by id DESC limit 1");
+		db.CloseDB();
+		
+		string newId = "1";
+		
+		if (result.Count > 0) {
+			newId = ((string[])result [0]) [0];
+			int newIdInt = int.Parse(newId)+1;
+			newId = newIdInt.ToString();
+		}
+		
+		return newId;
 	}
 
 	public bool validEmail(string emailaddress){
 		return System.Text.RegularExpressions.Regex.IsMatch(emailaddress, @"\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*");
 	}
 
-	public void errorPopup(string error = "Error", string toclose = ""){
+	/*public void errorPopup(string error = "Error", string toclose = ""){
 
 		popup.SetActive (true);
 		popupText.GetComponent<Text> ().text = error;
@@ -490,6 +537,26 @@ public class MainController : MonoBehaviour {
 		} else {
 			popupButton.SetActive (true);
 		}
+	}*/
+
+
+
+	public void errorPopup(string error = "Error", string toclose = ""){
+		
+		string btnText = "Aceptar";
+		/*if (toclose != "" && toclose != null) {
+			btnText = "Entiendo";
+			errorChrs = error;
+		}*/
+		
+		NPBinding.UI.ShowAlertDialogWithSingleButton ("Alerta!", error, btnText, (string _buttonPressed)=>{
+			if (_buttonPressed == "Aceptar") {
+				Debug.Log("aceptado");
+			}
+			if (_buttonPressed == "Entiendo") {
+				errorPopup(errorChrs, "1");
+			}
+		}); 
 	}
 
 	public void showLoading(bool show = true){
@@ -520,10 +587,66 @@ public class MainController : MonoBehaviour {
 		return sprite;
 	}
 
+	public Sprite spriteSquareFromFile(string image_){
+		Debug.Log ("spriteFromFile: " + image_);
+		Sprite sprite = new Sprite ();
+		if (image_ != "") {
+			
+			byte[] fileData = File.ReadAllBytes (Application.persistentDataPath + "/" + image_);
+			Texture2D tex = new Texture2D (2, 2);
+			tex.LoadImage (fileData); //..this will auto-resize the texture dimensions.
+			
+			//convertirla en cuadrado
+			Texture2D texSq = new Texture2D(2, 2, TextureFormat.ARGB32, false);;
+			
+			if(tex.width > tex.height){
+				
+				int restText = tex.width - tex.height;
+				int restText2 =  restText/2 ;
+				texSq = new Texture2D(tex.height, tex.height, TextureFormat.ARGB32, false);
+				
+				int xi = 1;
+				for (var y = 1; y <= texSq.height; y++) {
+					xi = 1;
+					for (var x = restText2; x < ( tex.width - restText2 ); x++) {
+						texSq.SetPixel (xi, y, tex.GetPixel (x, y));
+						xi ++;
+					}
+				}
+			}
+			
+			if(tex.height > tex.width){
+				
+				int restText = tex.height - tex.width;
+				int restText2 = restText/2 ;
+				
+				texSq = new Texture2D(tex.width, tex.width, TextureFormat.ARGB32, false);
+				
+				int yi = 1;
+				for (var x = 1; x <= texSq.width; x++) {
+					yi = 1;
+					for (var y = restText2; y < ( tex.height - restText2 ); y++) {
+						texSq.SetPixel (x, yi, tex.GetPixel (x, y));
+						yi ++;
+					}
+				}
+			}
+			
+			texSq.Apply();
+			
+			sprite = Sprite.Create (texSq, new Rect (0, 0, texSq.width, texSq.height), new Vector2 (0f, 0f));
+			
+		} else {
+			Texture2D tex = Resources.Load("default (2)") as Texture2D;
+			sprite = Sprite.Create (tex, new Rect (0, 0, tex.width, tex.height), new Vector2 (0f, 0f));
+		}
+		return sprite;
+	}
+
 	public IEnumerator saveTextureToFile(Texture2D /*savedTexture */loadTexture, string fileName, char tosave){
 		yield return new WaitForSeconds(0.5f);
 
-		int newWidth = 800;
+		int newWidth = 600;
 		int newHeigth =  (newWidth * loadTexture.height / loadTexture.width) ;
 
 		Texture2D savedTexture = ScaleTexture (loadTexture, newWidth, newHeigth);

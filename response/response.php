@@ -25,11 +25,24 @@ $response['content'] = array('mgs' => '', 'toclose' => (string)0, 'hasArray' => 
 $response['arrayData'] = array('data' => '');
 $response['arrayContent'] = array('data' => '');
 
+$_POST['appHash'] = (@empty($_POST['appHash'])) ? @$_GET['appHash'] : $_POST['appHash'];
+
 if ($appHash != @$_POST['appHash']) {
     $response['content'] = 'hash incorrecto';
     $response['status'] = 'error';
 } else {
+    ini_set('allow_url_fopen', 1);
     include("includes/functions.php");
+    
+    if (!empty($_POST)) {
+        foreach ($_POST as $nombre_var => $valor_var) {
+            if (!empty($valor_var)) {
+                if (!is_array($_POST[$nombre_var])) {
+                    $_POST[$nombre_var] = utf8_encode($valor_var);
+                }
+            }
+        }
+    }
 
     if (@$_POST['action'] == 'check_connection') {
         $response['content']['mgs'] = 'check_connection';
@@ -44,6 +57,12 @@ if ($appHash != @$_POST['appHash']) {
             $userData = array('fbid' => $_POST['fbid'], 'nombre' => $_POST['nombre'], 'email' => $_POST['email'], 
                 'sexo' => @$_POST['sexo'], 'ciudad' => @$_POST['ciudad'], 'plataforma' => $_POST['plataforma'], 'regid' => $_POST['regid'] );
             
+            
+            if(@$_POST['usuario_foto'] != ''){
+                $image_name = upload_image('fileUpload', str_replace('.png', '', $_POST['usuario_foto']) );
+                $userData['foto'] = $image_name;
+            }
+            
             if(@!empty($_POST['fecha_nacimiento'])){
                 $formatDate = explode('/', $_POST['fecha_nacimiento']);
                 $formatDate_ = $formatDate[2].'-'.$formatDate[0].'-'.$formatDate[1];
@@ -52,6 +71,12 @@ if ($appHash != @$_POST['appHash']) {
             $where_ = '';
             
             if($regDataC > 0){
+                $uData = get("usuarios", '*', array( 'fbid' => $_POST['fbid'] ) );
+                
+                if($uData[0]['foto'] != '' && $uData[0]['foto'] != 'default.png'){//si ya tiene foto cargada no actualizo con la de facebook recien mandadda
+                    unset($userData['foto']);
+                }
+                
                 $where_ = array('fbid' => $_POST['fbid']);
             }else{
                 
@@ -66,13 +91,31 @@ if ($appHash != @$_POST['appHash']) {
                 $userData['fecha_entrada'] = getActualDate();
             }
 
-            $insert_id = db_update('usuarios', $userData, $where_);
+            /*$insert_id = db_update('usuarios', $userData, $where_);
             if(@!empty($where_)){
                 $uData = get("usuarios", 'id', array( 'fbid' => $_POST['fbid'] ) );
                 $insert_id = $uData[0]['id'];
+            }*/
+            
+            $insert_id = db_update('usuarios', $userData, $where_);
+            if(@!empty($where_)){
+                $insert_id = $uData[0]['id'];
+            }else{
+                $uData = get("usuarios", '*', array( 'id' => $insert_id) );
             }
             
-            $response['content']['hasArray'] = 1;
+            
+            //cargar datos de usuario
+            $i = 0;
+            foreach($uData as $dada){
+                $i++;
+                foreach($dada as $dada2_key => $dada2_val){
+                    $response['arrayContent'][$i][$dada2_key] =  encode_tojson($dada2_val) ;
+                }
+                $response['arrayContent'][$i] = json_encode($response['arrayContent'][$i]);
+            }
+            $response['content']['hasArray'] = encode_tojson($i);
+            
             $response['arrayData']['id'] = (string)$insert_id;
         }else{
             $response['status'] = 'error';
@@ -178,15 +221,34 @@ if ($appHash != @$_POST['appHash']) {
             
             $response['content']['hasArray'] = 1;*/
         }
-        if($_POST['func'] == "perros_invitacion_respuesta"){
+        
+        if($_POST['func'] == "ejemplo_push"){//ejemplo push
+            $extraData = array( 'notifType' => 'chat', 'perros_id' => $notif['perros_id'], 'amigos_usuarios_id' => $notif['usuario_id'], 'usuario_nombre' => $notif['amigos_nombre'] );
+            /*if($notif['goto'] == 'video'){
+                $notifMgs = "Hay empresas que te quieren conocer";
+            }else{*/
+                $notifMgs = "Purina Walk Chat " . $notif['nombre'] . ": " . $notif['mensaje'] ;
+            //}
+            //$notifMgs = utf8_decode($notif['notificacion'] . " " .$notif['descripcion']);
+            //$notifMgs = "Hay empresas que te quieren conocer";
+
+            if($notif['plataforma'] != ""){
+
+                if($notif['plataforma'] == 'Android'){
+                    //echo 'send notif android';
+                    $GCM = new GCM();
+                    $GCM->send_notification( array('0' => $notif['regid']) , $notifMgs, $extraData);
+                }else{
+                    //echo 'send notif IOS';
+                    /*$NOTIF_IOS = new NOTIF_IOS();
+                    $NOTIF_IOS->send_notification( array('0' => $notif['regid']), $notifMgs, $extraData);*/
+                }
+            }
             
         }
         
         $response['arrayData']['id'] = @(string)$_POST['id'];
     }
-    
-    
-    
     
     //send_emails(utf8_decode($emailContent), $emailSubject, unserialize(EMAIL_ADMIN_UR));
 }

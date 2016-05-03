@@ -4,8 +4,12 @@ using Facebook.MiniJSON;
 
 public class loginFacebook : MonoBehaviour {
 	private bool enabled = false;
+	private MainController GMS;
 
 	void Start () {
+		GameObject GM = GameObject.Find ("MainController");
+		GMS = GM.GetComponent<MainController>();
+
 		FB.Init(SetInit, OnHideUnity);
 	}
 
@@ -26,6 +30,7 @@ public class loginFacebook : MonoBehaviour {
 
 			Debug.Log(FB.UserId);
 		} else {
+			GMS.errorPopup("Ocurrio un error con el login de facebook, por favor intentalo nuevamente.");
 			Debug.Log("User cancelled login");
 		}
 	}
@@ -63,7 +68,13 @@ public class loginFacebook : MonoBehaviour {
 		GMS.userData.sexo = (string)search ["gender"];
 		GMS.userData.fecha_nacimiento = (string)search ["birthday"];
 
-		GMS.SendMessage ("loginFacebook");
+		StartCoroutine (loginFacebook_ ());
+	}
+
+	private IEnumerator loginFacebook_(){
+		yield return new WaitForSeconds (3);
+		//GMS.showLoading(false);
+		GMS.loginFacebook ();
 	}
 }
 

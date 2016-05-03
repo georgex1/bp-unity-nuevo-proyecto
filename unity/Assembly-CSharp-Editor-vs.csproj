@@ -5,7 +5,7 @@
 	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 	<ProductVersion>10.0.20506</ProductVersion>
 	<SchemaVersion>2.0</SchemaVersion>
-	<ProjectGuid>{57CA560C-FE26-F7D5-8CDE-EF8457E6CE3C}</ProjectGuid>
+	<ProjectGuid>{33C3DCDC-76CB-1FCD-751B-4E7E18D0E2DF}</ProjectGuid>
 	<OutputType>Library</OutputType>
 	<AppDesignerFolder>Properties</AppDesignerFolder>
 	<RootNamespace></RootNamespace>
@@ -175,6 +175,7 @@
      <None Include="Assets\Plugins\Android\google-play-services_lib\res\values\common_attrs.xml" />
      <None Include="Assets\Plugins\Android\AndroidManifest.xml" />
      <None Include="Assets\Plugins\Android\native_plugins_lib\res\values-v11\styles.xml" />
+     <None Include="Assets\sqlitekit\Readme.txt" />
      <None Include="Assets\Plugins\Android\facebook\res\drawable\com_facebook_top_background.xml" />
      <None Include="Assets\Plugins\Android\google-play-services_lib\res\values-el\common_strings.xml" />
      <None Include="Assets\Plugins\Android\google-play-services_lib\res\values-ms-rMY\common_strings.xml" />
@@ -206,6 +207,7 @@
      <None Include="Assets\Plugins\Android\google-play-services_lib\res\values-es\common_strings.xml" />
      <None Include="Assets\Plugins\Android\twitter_lib\res\values-pt\values.xml" />
      <None Include="Assets\Plugins\Android\google-play-services_lib\res\values-hi\common_strings.xml" />
+     <None Include="Assets\sqlitekit\license.txt" />
      <None Include="Assets\Plugins\Android\google-play-services_lib\res\values-te-rIN\common_strings.xml" />
      <None Include="Assets\Plugins\Android\facebook\res\layout\com_facebook_picker_activity_circle_row.xml" />
      <None Include="Assets\Plugins\Android\native_plugins_lib\res\values-v14\styles.xml" />
@@ -260,7 +262,6 @@
      <None Include="Assets\Plugins\Android\facebook\res\drawable\com_facebook_picker_item_background.xml" />
      <None Include="Assets\Plugins\Android\google-play-services_lib\res\color\wallet_secondary_text_holo_dark.xml" />
      <None Include="Assets\Plugins\Android\twitter_lib\proguard.txt" />
-     <None Include="Assets\Plugins\SQLiter\README.txt" />
      <None Include="Assets\Plugins\Android\facebook\res\values-es\strings.xml" />
      <None Include="Assets\Plugins\Android\google-play-services_lib\res\values-iw\common_strings.xml" />
      <None Include="Assets\Plugins\Android\facebook\res\layout\com_facebook_picker_list_row.xml" />
@@ -312,19 +313,13 @@
  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/4.6.2/Editor/UnityEditor.UI.dll</HintPath>
  </Reference>
  <Reference Include="Mono.Data.SqliteClient">
- <HintPath>E:/wamp/www/betterpixel/rednit/rednit/Assets/Plugins/SQLiter/DLLs/Mono.Data.SqliteClient.dll</HintPath>
+ <HintPath>E:/unity proyectos/bp-unity-nuevo-proyecto/unity/Assets/Mono.Data.SqliteClient.dll</HintPath>
  </Reference>
  <Reference Include="System.Data">
- <HintPath>E:/wamp/www/betterpixel/rednit/rednit/Assets/Plugins/SQLiter/DLLs/System.Data.dll</HintPath>
+ <HintPath>E:/unity proyectos/bp-unity-nuevo-proyecto/unity/Assets/System.Data.dll</HintPath>
  </Reference>
  <Reference Include="IFacebook">
- <HintPath>E:/wamp/www/betterpixel/rednit/rednit/Assets/Facebook/Scripts/IFacebook.dll</HintPath>
- </Reference>
- <Reference Include="Mono.Data">
- <HintPath>E:/wamp/www/betterpixel/rednit/rednit/Assets/Plugins/Mono.Data.dll</HintPath>
- </Reference>
- <Reference Include="Mono.Data.Sqlite">
- <HintPath>E:/wamp/www/betterpixel/rednit/rednit/Assets/Plugins/Mono.Data.Sqlite.dll</HintPath>
+ <HintPath>E:/unity proyectos/bp-unity-nuevo-proyecto/unity/Assets/Facebook/Scripts/IFacebook.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.Graphs">
  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEditor.Graphs.dll</HintPath>
@@ -332,9 +327,9 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Assembly-CSharp-firstpass-vs.csproj">
-      <Project>{F9978667-E532-5F6D-DE79-8A42D0A0A9E9}</Project>      <Name>Assembly-CSharp-firstpass-vs</Name>    </ProjectReference>
+      <Project>{518622B2-9050-A153-E465-3E4BD155181A}</Project>      <Name>Assembly-CSharp-firstpass-vs</Name>    </ProjectReference>
     <ProjectReference Include="Assembly-CSharp-vs.csproj">
-      <Project>{F35B3A61-86C5-8CAB-8C38-5D66CA9C662A}</Project>      <Name>Assembly-CSharp-vs</Name>    </ProjectReference>
+      <Project>{C3DA89E1-70C6-7D6C-993E-C8F831D35880}</Project>      <Name>Assembly-CSharp-vs</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -2,17 +2,12 @@ using UnityEngine;
 using System;
 using System.IO;
 using System.Collections;
-using System.Data;
 using System.Text;
-using Mono.Data.SqliteClient;
 
 public class dbAccess : MonoBehaviour {
 	private string connection;
-	private IDbConnection dbcon;
-	private IDbCommand dbcmd;
-	private IDataReader reader;
-	private StringBuilder builder;
-
+	private SQLiteDB db = null;
+	
 	// Use this for initialization
 	void Start () {
 		
@@ -20,55 +15,76 @@ public class dbAccess : MonoBehaviour {
 	
 	public void OpenDB(string p)
 	{
-		//Debug.Log("Call to OpenDB:" + p);
-		// check if file exists in Application.persistentDataPath
-		string filepath = Application.persistentDataPath + "/" + p;
-		if(!File.Exists(filepath))
-		{
-			Debug.LogWarning("File \"" + filepath + "\" does not exist. Attempting to create from \"" +
-			                 Application.dataPath + "!/assets/" + p);
-			// if it doesn't ->
-			// open StreamingAssets directory and load the db -> 
-			WWW loadDB = new WWW("jar:file://" + Application.dataPath + "!/assets/" + p);
-			while(!loadDB.isDone) {}
-			// then save to Application.persistentDataPath
-			File.WriteAllBytes(filepath, loadDB.bytes);
-		}
-		
-		//open db connection
-		connection = "URI=file:" + filepath;
-		Debug.Log("Stablishing connection to: " + connection);
-		dbcon = new SqliteConnection(connection);
-		dbcon.Open();
+		db = new SQLiteDB();
+		string filename = Application.persistentDataPath + "/" + p;
+		//Debug.Log("Stablishing connection to: " + filename);
+		db.Open(filename);
 	}
 	
 	public void CloseDB(){
-		reader.Close(); // clean everything up
-  	 	reader = null;
-   		dbcmd.Dispose();
-   		dbcmd = null;
-   		dbcon.Close();
-   		dbcon = null;
+		db.Close();
 	}
 	
-	public IDataReader BasicQuery(string query){ // run a basic Sqlite query
-		dbcmd = dbcon.CreateCommand(); // create empty command
-		dbcmd.CommandText = query; // fill the command
-		reader = dbcmd.ExecuteReader(); // execute command which returns a reader
-		return reader; // return the reader
-	}
-
 	public ArrayList BasicQueryArray(string query){
-
-		dbcmd = dbcon.CreateCommand();
-		dbcmd.CommandText = query;
-		reader = dbcmd.ExecuteReader();
-		//string[,] readArray = new string[reader, reader.FieldCount];
+		
+		SQLiteQuery qr;
 
 		ArrayList readArray = new ArrayList();
 
-		//if (reader.FieldCount > 0) {
+		try{
 
+			qr = new SQLiteQuery(db, query);
+
+			while (qr.Step()) {
+
+				string[] row = new string[qr.columnNames.Length];
+				int j = 0;
+				
+				//Debug.Log( "tipo: " + qr.GetType() );
+				foreach(string colName in qr.columnNames){
+
+					if(qr.columnTypes[j] == 1){
+						row [j] = qr.GetInteger(colName).ToString();
+					}else if(qr.columnTypes[j] == 3 || qr.columnTypes[j] == 2){
+						row [j] = qr.GetOther(colName);
+					}else if(qr.columnTypes[j] == 5){
+						row [j] = qr.GetOther(colName);
+					}else{
+						Debug.Log("no type 1 or 3, type: " + qr.columnTypes[j]);
+					}
+
+					/*if(colName == "id"){
+						row [j] = qr.GetInteger(colName).ToString();
+					}else{
+						row [j] = qr.GetString(colName);
+					}*/
+
+					j++;
+				}
+				
+				readArray.Add (row);
+				//qr.GetType();
+				
+			}
+			
+			qr.Release();
+
+		}
+		catch(Exception e){
+			Debug.Log(e);
+		}
+
+		return readArray; // return matches
+		
+		/*dbcmd = dbcon.CreateCommand();
+		dbcmd.CommandText = query;
+		reader = dbcmd.ExecuteReader();
+		//string[,] readArray = new string[reader, reader.FieldCount];
+		
+
+		
+		//if (reader.FieldCount > 0) {
+		
 		while (reader.Read()) {
 			//Debug.Log(reader.GetString (1));
 			string[] row = new string[reader.FieldCount];
@@ -84,22 +100,24 @@ public class dbAccess : MonoBehaviour {
 						Debug.Log(e);
 					}
 				}
-
+				
 				j++;
 			}
 			readArray.Add (row);
 		}
 		//}
 		reader.Close ();
-		return readArray; // return matches
+		return readArray; // return matches*/
 	}
-
+	
 	public int BasicQueryInsert(string query){
 		try
 		{
-			dbcmd = dbcon.CreateCommand(); // create empty command
-			dbcmd.CommandText = query; // fill the command
-			reader = dbcmd.ExecuteReader(); // execute command which returns a reader
+			SQLiteQuery qr;
+			qr = new SQLiteQuery(db, query);
+			qr.Step();
+			qr.Release();
+			
 		}
 		catch(Exception e){
 			
@@ -118,9 +136,10 @@ public class dbAccess : MonoBehaviour {
 		}
 		query += ")";
 		try{
-			dbcmd = dbcon.CreateCommand(); // create empty command
-			dbcmd.CommandText = query; // fill the command
-			reader = dbcmd.ExecuteReader(); // execute command which returns a reader
+			SQLiteQuery qr;
+			qr = new SQLiteQuery(db, query);
+			qr.Step();
+			qr.Release();
 		}
 		catch(Exception e){
 			
@@ -129,16 +148,17 @@ public class dbAccess : MonoBehaviour {
 		}
 		return true;
 	}
-
-
+	
+	
 	public int UpdateSingle(string tableName, string colName , string value, string whereName , string whereValue){ // single insert
 		string query;
 		query = "UPDATE " + tableName + " set "+colName+" = " + "'" + value + "' where "+whereName+" =  '"+whereValue+"' ";
 		try
 		{
-			dbcmd = dbcon.CreateCommand(); // create empty command
-			dbcmd.CommandText = query; // fill the command
-			reader = dbcmd.ExecuteReader(); // execute command which returns a reader
+			SQLiteQuery qr;
+			qr = new SQLiteQuery(db, query);
+			qr.Step();
+			qr.Release();
 		}
 		catch(Exception e){
 			
@@ -153,9 +173,10 @@ public class dbAccess : MonoBehaviour {
 		query = "INSERT INTO " + tableName + "(" + colName + ") " + "VALUES (" + value + ")";
 		try
 		{
-			dbcmd = dbcon.CreateCommand(); // create empty command
-			dbcmd.CommandText = query; // fill the command
-			reader = dbcmd.ExecuteReader(); // execute command which returns a reader
+			SQLiteQuery qr;
+			qr = new SQLiteQuery(db, query);
+			qr.Step();
+			qr.Release();
 		}
 		catch(Exception e){
 			
@@ -164,10 +185,10 @@ public class dbAccess : MonoBehaviour {
 		}
 		return 1;
 	}
-
+	
 	public int InsertIgnoreInto(string tableName, string[] col, string[] values, string id_){ // Specific insert with col and values
 		string query;
-
+		
 		ArrayList result = BasicQueryArray ("select id from " + tableName + " where id = '"+id_+"' ");
 		if (result.Count == 0) {
 			query = "INSERT INTO " + tableName + "(" + col[0];
@@ -186,14 +207,15 @@ public class dbAccess : MonoBehaviour {
 			}
 			query += " WHERE id = '"+ id_ + "' ";
 		}
-
-
-		Debug.Log(query);
+		
+		
+		//Debug.Log(query);
 		try
 		{
-			dbcmd = dbcon.CreateCommand();
-			dbcmd.CommandText = query;
-			reader = dbcmd.ExecuteReader();
+			SQLiteQuery qr;
+			qr = new SQLiteQuery(db, query);
+			qr.Step();
+			qr.Release();
 		}
 		catch(Exception e){
 			
@@ -214,12 +236,13 @@ public class dbAccess : MonoBehaviour {
 			query += ", " + "'"+values[i] + "'";
 		}
 		query += ")";
-		Debug.Log(query);
+		//Debug.Log(query);
 		try
 		{
-			dbcmd = dbcon.CreateCommand();
-			dbcmd.CommandText = query;
-			reader = dbcmd.ExecuteReader();
+			SQLiteQuery qr;
+			qr = new SQLiteQuery(db, query);
+			qr.Step();
+			qr.Release();
 		}
 		catch(Exception e){
 			
@@ -238,9 +261,10 @@ public class dbAccess : MonoBehaviour {
 		query += ")";
 		try
 		{
-			dbcmd = dbcon.CreateCommand();
-			dbcmd.CommandText = query;
-			reader = dbcmd.ExecuteReader();
+			SQLiteQuery qr;
+			qr = new SQLiteQuery(db, query);
+			qr.Step();
+			qr.Release();
 		}
 		catch(Exception e){
 			
@@ -253,48 +277,69 @@ public class dbAccess : MonoBehaviour {
 	public ArrayList SingleSelectWhere(string tableName , string itemToSelect,string wCol,string wPar, string wValue){ // Selects a single Item
 		string query;
 		query = "SELECT " + itemToSelect + " FROM " + tableName + " WHERE " + wCol + wPar + wValue;	
-		dbcmd = dbcon.CreateCommand();
-		dbcmd.CommandText = query;
-		reader = dbcmd.ExecuteReader();
-		//string[,] readArray = new string[reader, reader.FieldCount];
-		string[] row = new string[reader.FieldCount];
+		
+		SQLiteQuery qr;
+		qr = new SQLiteQuery(db, query);
 		ArrayList readArray = new ArrayList();
-		while(reader.Read()){
-			int j=0;
-			while(j < reader.FieldCount)
-			{
-				row[j] = reader.GetString(j);
+		
+		while (qr.Step()) {
+			
+			string[] row = new string[qr.columnNames.Length];
+			int j = 0;
+			
+			//Debug.Log( "tipo: " + qr.GetType() );
+			foreach(string colName in qr.columnNames){
+				if(colName == "id"){
+					row [j] = qr.GetInteger(colName).ToString();
+				}else if(colName == "text"){
+					row [j] = qr.GetString(colName);
+				}
 				j++;
 			}
-			readArray.Add(row);
+			
+			readArray.Add (row);
+			//qr.GetType();
+			
 		}
-		reader.Close ();
+		
+		qr.Release();
 		return readArray; // return matches
 	}
-
+	
 	public ArrayList getLastId(){ // Selects a single Item
 		string query;
 		query = " SELECT last_insert_rowid() as last_id " ;	
-		dbcmd = dbcon.CreateCommand();
-		dbcmd.CommandText = query;
-		reader = dbcmd.ExecuteReader();
-		//string[,] readArray = new string[reader, reader.FieldCount];
-		string[] row = new string[reader.FieldCount];
+		
+		SQLiteQuery qr;
+		qr = new SQLiteQuery(db, query);
 		ArrayList readArray = new ArrayList();
-		while(reader.Read()){
-			int j=0;
-			while(j < reader.FieldCount)
-			{
-				row[j] = reader.GetString(j);
+		
+		while (qr.Step()) {
+			
+			string[] row = new string[qr.columnNames.Length];
+			int j = 0;
+			
+			//Debug.Log( "tipo: " + qr.GetType() );
+			foreach(string colName in qr.columnNames){
+				if(colName == "id"){
+					row [j] = qr.GetInteger(colName).ToString();
+				}else if(colName == "text"){
+					row [j] = qr.GetString(colName);
+				}
 				j++;
 			}
-			readArray.Add(row);
+			
+			readArray.Add (row);
+			//qr.GetType();
+			
 		}
+		
+		qr.Release();
 		return readArray; // return matches
 	}
-
+	
 	// Update is called once per frame
 	void Update () {
-	
+		
 	}
 }
