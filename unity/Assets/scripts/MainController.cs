@@ -10,7 +10,7 @@ using UnityEngine.UI;
 
 public class MainController : MonoBehaviour {
 
-	public string dbName = "rednit.db";
+	public string dbName = "develop.db";
 	private string appHash = "R3dN1t!";
 	private string responseURL = "http://local.betterpixel.com/bp_response/response.php";
 	private string responseAssets = "http://local.betterpixel.com/bp_response/assets/images/";

@@ -17,7 +17,7 @@ public class dbAccess : MonoBehaviour {
 	{
 		db = new SQLiteDB();
 		string filename = Application.persistentDataPath + "/" + p;
-		//Debug.Log("Stablishing connection to: " + filename);
+		Debug.Log("Stablishing connection to: " + filename);
 		db.Open(filename);
 	}
 	
